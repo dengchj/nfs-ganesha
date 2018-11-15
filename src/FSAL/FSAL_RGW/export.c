@@ -327,12 +327,17 @@ static fsal_status_t get_fs_dynamic_info(struct fsal_export *export_pub,
 	struct rgw_export *export =
 	    container_of(export_pub, struct rgw_export, export);
 
+	struct rgw_handle *handle =
+	    container_of(obj_hdl, struct rgw_handle, handle);
+
+	struct rgw_file_handle *hd = handle->rgw_fh;
+
 	int rc = 0;
 
 	/* Filesystem stat */
 	struct rgw_statvfs vfs_st;
 
-	rc = rgw_statfs(export->rgw_fs, export->rgw_fs->root_fh, &vfs_st,
+	rc = rgw_statfs(export->rgw_fs, hd, &vfs_st,
 			RGW_STATFS_FLAG_NONE);
 	if (rc < 0)
 		return rgw2fsal_error(rc);
